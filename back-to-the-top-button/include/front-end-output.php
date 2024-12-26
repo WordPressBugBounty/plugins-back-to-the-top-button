@@ -62,6 +62,14 @@ if( !empty($getting_plugin_data) ) {
     // dealing with exclude or include pages
     // ----------------------------------------------
 
+    if( !isset($yy_array_top_btn['exclude_option']) ) {
+        $yy_array_top_btn['exclude_option'] = '';
+    }
+
+    if( !isset($yy_array_top_btn['exclude_ids']) ) {
+        $yy_array_top_btn['exclude_ids'] = '';
+    }
+
     $top_btn_exclude_option = esc_attr($yy_array_top_btn['exclude_option']);
     $exclude_ids = esc_attr($yy_array_top_btn['exclude_ids']);
 

@@ -3,7 +3,7 @@ Contributors: YYDevelopment
 Tags: Back To Top, Button, Top
 Requires at least: 4
 Tested up to: 6.5
-Stable tag: 2.1.7
+Stable tag: 2.1.8
 Requires PHP: 5.2.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -135,6 +135,9 @@ Under the tag "settings" on the admin panel you will have the option to edit the
 
 = 2.1.6, 2.1.7 =
 * Remove XSS problem on background option
+
+= 2.1.8 =
+* Fixed warning on php 8.0
 
 == Upgrade Notice ==
 
