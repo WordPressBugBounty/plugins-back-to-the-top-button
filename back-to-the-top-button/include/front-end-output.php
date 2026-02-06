@@ -44,6 +44,12 @@ if( !empty($getting_plugin_data) ) {
     $button_z_index = intval($yy_array_top_btn['button_z_index']);
     $button_border = esc_html($yy_array_top_btn['button_border']);
     $icon_image_url = esc_url($yy_array_top_btn['icon_image_url']);
+    
+    // Handle backward compatibility for new fields
+    $icon_type = isset($yy_array_top_btn['icon_type']) ? esc_html($yy_array_top_btn['icon_type']) : '';
+    $icon_svg_url = isset($yy_array_top_btn['icon_svg_url']) ? esc_url($yy_array_top_btn['icon_svg_url']) : '';
+    $icon_width = isset($yy_array_top_btn['icon_width']) ? intval($yy_array_top_btn['icon_width']) : 0;
+    $icon_height = isset($yy_array_top_btn['icon_height']) ? intval($yy_array_top_btn['icon_height']) : 0;
     $hide_button_on_desktop = intval($yy_array_top_btn['hide_button_on_desktop']);
     $hide_button_on_mobile = intval($yy_array_top_btn['hide_button_on_mobile']);
     $mobile_width = intval($yy_array_top_btn['mobile_width']);
@@ -95,7 +101,22 @@ if( !empty($getting_plugin_data) ) {
         // create button css code
         // ----------------------------------------------
 
-        $button_html_code = "<a href='#' class='yydev-back-to-top'><span></span></a>";
+        // Generate button HTML based on icon type
+        $button_html_code = "";
+        $button_html_code .= "<div class='yydev-back-to-top-warp'>";
+
+            if ($icon_type === 'svg') {
+                // For SVG, use img tag inside the button with SVG URL or default
+                $current_svg_url = !empty($icon_svg_url) ? $icon_svg_url : plugins_url('images/back-to-top.svg', dirname(__FILE__));
+                $svg_width = !empty($icon_width) ? intval($icon_width) : intval($button_width);
+                $svg_height = !empty($icon_height) ? intval($icon_height) : intval($button_height);
+                $button_html_code .= "<a href='#' class='yydev-back-to-top yydev-svg-icon'><img src='" . esc_url($current_svg_url) . "' width='" . esc_attr($svg_width) . "' height='" . esc_attr($svg_height) . "' alt='Back to Top' /></a>";
+            } else {
+                // Default behavior for images and default icon
+                $button_html_code .= "<a href='#' class='yydev-back-to-top'><span></span></a>";
+            }
+
+        $button_html_code .= "</div><!--yydev-back-to-top-warp-->";
 
         // ----------------------------------------------
         // create button css code
@@ -105,13 +126,24 @@ if( !empty($getting_plugin_data) ) {
 
         // dealing with button style
         $button_style_code .= '<style>';
-            $button_style_code .= 'a.yydev-back-to-top {';
+            $button_style_code .= '.yydev-back-to-top {';
 
-                $button_style_code .= 'background:' . $background_color . ' url(' . $icon_image_url .') no-repeat;';
-
-                $current_background_position = "50% 43%";
-                if(!empty($background_position)) { $current_background_position = $background_position; }
-                $button_style_code .= 'background-position: ' .  $current_background_position . ';';
+                // Handle different icon types
+                    if ($icon_type === 'svg') {
+                        // For SVG icons, no background image
+                        $button_style_code .= 'background:' . $background_color . ';';
+                        $button_style_code .= 'position: relative;';
+                        $button_style_code .= 'text-indent: 0;';
+                    } else {
+                    // Default behavior for images
+                    $current_icon_url = !empty($icon_image_url) ? $icon_image_url : plugins_url('images/back-to-top.png', dirname(__FILE__));
+                    $button_style_code .= 'background:' . $background_color . ' url(' . $current_icon_url .') no-repeat;';
+                    
+                    $current_background_position = "50% 43%";
+                    if(!empty($background_position)) { $current_background_position = $background_position; }
+                    $button_style_code .= 'background-position: ' .  $current_background_position . ';';
+                    $button_style_code .= 'text-indent:-9999px;';
+                }
 
                 $button_style_code .= 'width:' . $button_width . 'px;';
                 $button_style_code .= 'height:' . $button_height . 'px;';
@@ -119,7 +151,6 @@ if( !empty($getting_plugin_data) ) {
                 $button_style_code .= $horizontal_position . ':' . $horizontal_spacing . ';';
                 $button_style_code .= $vertical_position . ':' . $vertical_spacing . ';';
                 $button_style_code .= 'border:' . $button_border . ';';
-                $button_style_code .= 'text-indent:-9999px;';
                 $button_style_code .= 'position: fixed;';
                 $button_style_code .= 'display:none;';
 
@@ -136,10 +167,28 @@ if( !empty($getting_plugin_data) ) {
 
            $button_style_code .= '}';
 
+           // SVG specific styles
+           if ($icon_type === 'svg') {
+               $button_style_code .= '.yydev-back-to-top.yydev-svg-icon img {';
+               $button_style_code .= 'position: absolute;';
+               $button_style_code .= 'top: 50%;';
+               $button_style_code .= 'left: 50%;';
+               $button_style_code .= 'transform: translate(-50%, -50%);';
+               $button_style_code .= 'max-width: 100%;';
+               $button_style_code .= 'max-height: 100%;';
+               $button_style_code .= 'object-fit: contain;';
+               $button_style_code .= 'pointer-events: none;';
+               $button_style_code .= '}';
+               
+               $button_style_code .= '.yydev-back-to-top.yydev-svg-icon {';
+               $button_style_code .= 'overflow: hidden;';
+               $button_style_code .= '}';
+           }
+
            // dealing with button mobile style
            $button_style_code .= '@media only screen and (max-width: ' . $mobile_width . 'px) {';
 
-                $button_style_code .= 'a.yydev-back-to-top {';
+                $button_style_code .= '.yydev-back-to-top {';
 
                     if($mobile_button_position_checkbox == 1 ) {
                         $button_style_code .= $horizontal_position . ':auto;';

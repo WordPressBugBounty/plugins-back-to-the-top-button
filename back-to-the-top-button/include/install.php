@@ -38,6 +38,7 @@ if( !get_option($wp_options_name) ) {
 
     // getting the image arrow icon
     $icon_image_url = plugin_dir_url(dirname(__FILE__)) . 'images/back-to-top.png';
+    $icon_svg_url = plugin_dir_url(dirname(__FILE__)) . 'images/back-to-top.svg';
 
     $exclude_option = '';
     $exclude_ids = '';
@@ -70,6 +71,10 @@ if( !get_option($wp_options_name) ) {
         'smooth_scrolling_checkbox' => $smooth_scrolling_checkbox,
 
         'icon_image_url' => $icon_image_url,
+        'icon_svg_url' => $icon_svg_url,
+        'icon_type' => '',
+        'icon_width' => 0,
+        'icon_height' => 0,
 
         'exclude_option' => $exclude_option,
         'exclude_ids' => $exclude_ids,

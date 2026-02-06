@@ -38,6 +38,10 @@ if( isset($_POST['yydev_top_btn_nonce']) ) {
         $button_z_index = intval( $_POST['button_z_index'] );
         $button_border = esc_attr( $_POST['button_border'] );
         $icon_image_url = esc_url_raw( $_POST['icon_image_url'] );
+        $icon_svg_url = esc_url_raw( $_POST['icon_svg_url'] );
+        $icon_type = esc_attr( $_POST['icon_type'] );
+        $icon_width = intval( $_POST['icon_width'] );
+        $icon_height = intval( $_POST['icon_height'] );
         $hide_button_on_desktop = yydev_top_btn_checkbox_isset('hide_button_on_desktop');
         $hide_button_on_mobile = yydev_top_btn_checkbox_isset('hide_button_on_mobile');
         $mobile_width = intval( $_POST['mobile_width'] );
@@ -73,6 +77,10 @@ if( isset($_POST['yydev_top_btn_nonce']) ) {
             'button_z_index' => $button_z_index,
             'button_border' => $button_border,
             'icon_image_url' => $icon_image_url,
+            'icon_svg_url' => $icon_svg_url,
+            'icon_type' => $icon_type,
+            'icon_width' => $icon_width,
+            'icon_height' => $icon_height,
             'hide_button_on_desktop' => $hide_button_on_desktop,
             'hide_button_on_mobile' => $hide_button_on_mobile,
             'mobile_width' => $mobile_width,
@@ -243,14 +251,65 @@ if( !empty($getting_plugin_data) ) {
             <small>Example: 9999</small>
         </div><!--yydev_top_btn_line-->
 
+<?php
+        // Handle backward compatibility for new fields
+        $current_icon_type = isset($plugin_data_array['icon_type']) ? $plugin_data_array['icon_type'] : 'image';
+        $current_icon_width = isset($plugin_data_array['icon_width']) && !empty($plugin_data_array['icon_width']) ? $plugin_data_array['icon_width'] : '20';
+        $current_icon_height = isset($plugin_data_array['icon_height']) && !empty($plugin_data_array['icon_height']) ? $plugin_data_array['icon_height'] : '20';
+        $current_icon_image_url = isset($plugin_data_array['icon_image_url']) ? $plugin_data_array['icon_image_url'] : '';
+        $current_icon_svg_url = isset($plugin_data_array['icon_svg_url']) ? $plugin_data_array['icon_svg_url'] : '';
+?>
+
+        <br />
+
         <div class="yydev_top_btn_line">
-            <img class="yydev_light_img_bg" style="background:<?php echo esc_attr($plugin_data_array['background_color']); ?>" src="<?php echo yydev_top_btn_html_output($plugin_data_array['icon_image_url']); ?>" alt="" />
-            <label for="icon_image_url">Custom Icon Url: </label>
-            <input type="text" id="icon_image_url" class="input-very-long yydev_image_input" name="icon_image_url" value="<?php echo esc_url($plugin_data_array['icon_image_url'] ); ?>" />
+            <label for="icon_type">Icon Type: </label>
+            <select name="icon_type" id="icon_type" style="width:400px;">
+                <option value="image" <?php if($current_icon_type == "image" || empty($current_icon_type)) {echo "selected";} ?> >Regular Image Icon</option>
+                <option value="svg" <?php if($current_icon_type == "svg") {echo "selected";} ?> >SVG Icon (Require wordpress support to upload svg)</option>
+            </select>
+        </div><!--yydev_top_btn_line-->
+
+        <div class="yydev_top_btn_line" id="image_url_section">
+            <img class="yydev_light_img_bg" style="background:<?php echo esc_attr($plugin_data_array['background_color']); ?>" src="<?php echo yydev_top_btn_html_output($current_icon_image_url); ?>" alt="" />
+            <label for="icon_image_url">Custom Image Icon Url: </label>
+            <input type="text" id="icon_image_url" class="input-very-long yydev_image_input" name="icon_image_url" value="<?php echo esc_url($current_icon_image_url); ?>" />
             <input type="button" name="yydev_upload_image" class="yydev_upload_image button-secondary" value="Choose Image..." />
 
             <div class="clear"></div>
         </div><!--yydev_top_btn_line-->
+
+<?php
+        // Set default SVG URL if empty for both preview and input field
+        $default_svg_url = plugins_url('images/back-to-top.svg', dirname(__FILE__));
+        $current_svg_value = !empty($current_icon_svg_url) ? $current_icon_svg_url : $default_svg_url;
+?>
+        <div class="yydev_top_btn_line" id="svg_url_section" style="<?php echo ($current_icon_type != 'svg' ? 'display:none;' : ''); ?>">
+            <img class="yydev_light_svg_bg" style="background:<?php echo esc_attr($plugin_data_array['background_color']); ?>; width:<?php echo intval($current_icon_width); ?>px; height:<?php echo intval($current_icon_height); ?>px; object-fit:contain;" src="<?php echo esc_url($current_svg_value); ?>" alt="" />
+            <br />
+            <label for="icon_svg_url">Custom SVG Icon Url: </label>
+            <br />
+            <input type="text" id="icon_svg_url" class="input-very-long yydev_svg_input" name="icon_svg_url" value="<?php echo esc_url($current_svg_value); ?>" />
+            <input type="button" name="yydev_upload_svg" class="yydev_upload_svg button-secondary" value="Choose SVG..." />
+
+            <div class="clear"></div>
+        </div><!--yydev_top_btn_line-->
+
+        <div class="yydev_top_btn_line" id="icon_size_section" style="<?php echo ($current_icon_type != 'svg' ? 'display:none;' : ''); ?>">
+            <label for="icon_width">SVG Width: </label>
+            <input type="text" id="icon_width" class="input-very-short" name="icon_width" value="<?php echo yydev_top_btn_html_output($current_icon_width); ?>" /> PX  
+            <br />
+            <label for="icon_height">SVG Height: </label>
+            <input type="text" id="icon_height" class="input-very-short" name="icon_height" value="<?php echo yydev_top_btn_html_output($current_icon_height); ?>" /> PX  
+        </div><!--yydev_top_btn_line-->
+
+        <small>
+            Default Image URL: <?php echo plugins_url('images/back-to-top.png', dirname(__FILE__)); ?>
+            <br />
+            Default SVG URL: <?php echo plugins_url('images/back-to-top.svg', dirname(__FILE__)); ?>
+        </small>
+
+       <br /><br />
 
 
         <br />

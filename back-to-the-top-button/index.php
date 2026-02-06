@@ -4,7 +4,7 @@
 Plugin Name: YYDevelopment - Back To The Top Button
 Plugin URI:  https://www.yydevelopment.com/yydevelopment-wordpress-plugins/
 Description: Simple plugin that allow you add back to top button to your site
-Version:     2.1.9
+Version:     2.3.0
 Author:      YYDevelopment
 Author URI:  https://www.yydevelopment.com/
 */

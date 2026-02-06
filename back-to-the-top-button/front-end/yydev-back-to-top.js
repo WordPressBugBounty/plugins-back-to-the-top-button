@@ -9,15 +9,15 @@ jQuery(document).ready(function($){
 	$(window).scroll(function() {
 
 		if ( $(window).scrollTop() > amountScrolled ) {
-			$('a.yydev-back-to-top').fadeIn('slow');
+			$('.yydev-back-to-top').fadeIn('slow');
 		} else {
-			$('a.yydev-back-to-top').fadeOut('slow');
+			$('.yydev-back-to-top').fadeOut('slow');
 		} // if ( $(window).scrollTop() > amountScrolled ) {
 
 	}); // $(window).scroll(function() {
 
     // adding smooth scrolling to button
-	$('a.yydev-back-to-top').click(function() {
+	$('.yydev-back-to-top').click(function() {
 		$('html, body').animate({ scrollTop: 0 }, 700);
 		return false;
 	}); // $('a.yydev-back-to-top').click(function() {
