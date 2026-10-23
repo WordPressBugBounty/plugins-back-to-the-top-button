@@ -1,8 +1,8 @@
 ﻿=== Back To The Top Button ===
-Contributors: YYDevelopment
+Contributors: yydevelopment, yochay22
 Tags: Back To Top, Button, Top
 Requires at least: 5.0
-Tested up to: 6.9
+Tested up to: 7.1
 Stable tag: 2.3.0
 Requires PHP: 5.2.4
 License: GPLv2 or later
